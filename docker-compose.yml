@@ -8,23 +8,5 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
     ports:
       - "5432:5432"
-    networks:
-      - timescaledb-network
     volumes:
       - ./volume_postgres:/var/lib/postgresql/data
-
-  my-timescaledb:
-    image: timescale/timescaledb:latest-pg12
-    container_name: timescaledb-on-your-markets
-    environment:
-      POSTGRES_PASSWORD: mysecretpassword
-    ports:
-      - "5433:5432"
-    networks:
-      - timescaledb-network
-    volumes:
-      - ./volume_timescaledb:/var/lib/postgresql/data
-
-networks:
-  timescaledb-network:
-    driver: bridge

@@ -19,10 +19,6 @@ def main():
     # get data
     raw_coins = call_coinmarketcap_api()
 
-    # config_coins = { # Version for sandbox call as they change!
-    #     'BTC_ID': int(coins['data'][0]['id']),
-    #     'ETH_ID': int(coins['data'][1]['id']),
-    #                 }
     config_coins = {
         'BTC_ID': int(1),
         'ETH_ID': int(1027),
