@@ -1,10 +1,11 @@
-from requests import Request, Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
-import json
+# appy.py
+#
 from dotenv import load_dotenv
-import os
 import streamlit as st
 import pandas as pd
+from utils import call_coinmarketcap_api
+from datetime import datetime
+import psycopg2
 
 
 # Load environment variables
@@ -12,65 +13,32 @@ env = 'dev'
 dotenv_path = f'.env.{env}'
 load_dotenv(dotenv_path=dotenv_path)
 
-# Function to call CoinMarketCap API
-def call_coinmarketcap_api():
-    base_url = 'https://sandbox-api.coinmarketcap.com'
-    # base_url = 'https://pro-api.coinmarketcap.com'
-    url = f'{base_url}/v1/cryptocurrency/listings/latest'
-    parameters = {
-        'start': '1',
-        'limit': '5',
-        'convert': 'GBP'
+
+def main():
+
+    # get data
+    raw_coins = call_coinmarketcap_api()
+
+    # config_coins = { # Version for sandbox call as they change!
+    #     'BTC_ID': int(coins['data'][0]['id']),
+    #     'ETH_ID': int(coins['data'][1]['id']),
+    #                 }
+    config_coins = {
+        'BTC_ID': int(1),
+        'ETH_ID': int(1027),
+        'BNB_ID': int(1839),
+        'SOL_ID': int(5426),
     }
-    headers = {
-        'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': os.getenv('API-KEY-COINMARKETCAP'),
-    }
 
-    session = Session()
-    session.headers.update(headers)
+    coins = [coin for coin in raw_coins['data'] if coin['id'] in config_coins.values()]
+    assert coins, 'No `coins` present after filter'
 
-    try:
-        response = session.get(url, params=parameters)
-        json_data = json.loads(response.text)
-    except (ConnectionError, Timeout, TooManyRedirects) as e:
-        json_data = None
-        st.error(f"Error: {e}")
+    for coin in coins:
+        price = int(round(coin['quote']['GBP']['price']))  # rounding due to volatility
+        timestamp = datetime.strptime(coin['quote']['GBP']['last_updated'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    return json_data
-
-# Get data from CoinMarketCap API
-data = call_coinmarketcap_api()
-
-# Streamlit app
-st.title("Latest Cryptocurrency Data")
-
-if data:
-
-    for crypto_data in data['data']:
-        print(crypto_data)
-
-        quote_data = crypto_data['quote']['GBP']
+        print(f'{price} {timestamp}')
 
 
-        st.gauge(quote_data['price'])
-        st.subheader(f"({crypto_data['symbol']})")
-        st.write(f"Rank: {crypto_data['cmc_rank']}")
-
-    # Loop through keys in the JSON data
-    st.subheader("Key-Value Pairs:")
-    for key, value in crypto_data.items():
-        st.write(f"{key}: {value}")
-
-    # Plot data
-    st.subheader("Price and Market Cap Over Time:")
-    df = pd.DataFrame({'Price (GBP)': [quote_data['price']], 'Market Cap (GBP)': [quote_data['market_cap']]})
-    st.line_chart(df)
-
-else:
-    st.error("Unable to fetch data from CoinMarketCap API.")
-
-# Run the Streamlit app
 if __name__ == '__main__':
-    st.set_page_config(layout="wide")
-    st.write("This is a Streamlit app. To run it, use the command: streamlit run filename.py")
+    main()
