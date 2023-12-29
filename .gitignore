@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 .env*
 .idea/
-volumes_*/
+volume_*/
 
 # C extensions
 *.so

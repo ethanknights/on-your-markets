@@ -23,5 +23,4 @@ CREATE TABLE on_your_market_prices (
 
 
 # Notes
-
 - Heroku - Cloud application hosting (e.g. app & database) - redirect CNAME from owned DNS.
