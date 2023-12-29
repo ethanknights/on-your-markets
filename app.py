@@ -2,15 +2,14 @@
 #
 from dotenv import load_dotenv
 import streamlit as st
-import pandas as pd
 from utils import (
     create_psql_connection,
     call_coinmarketcap_api,
     process_coinmarketcap_api,
     insert_psql_db_coinmarketcap,
-    fetch_data_from_db
+    fetch_coins_data_from_db,
+    plot_coins
 )
-import plotly.express as px
 
 env = 'dev'
 dotenv_path = f'.env.{env}'
@@ -19,26 +18,25 @@ load_dotenv(dotenv_path=dotenv_path)
 
 def main():
 
-    # Request and write latest data from APIs
     conn = create_psql_connection()
 
-    # raw_coins = call_coinmarketcap_api()
-    # coins = process_coinmarketcap_api(raw_coins=raw_coins)
-    #
-    # insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=coins)
+    # Buttons to trigger data collection
+    button_col_left, button_col_right = st.columns(2)
+    if button_col_left.button("Collect Latest Data From CoinMarketCap"):
+        raw_coins = call_coinmarketcap_api()
+        coins = process_coinmarketcap_api(raw_coins=raw_coins)
+        insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=coins)
+        st.success("Data collection successful!")
 
-    df = fetch_data_from_db(conn)
+    if button_col_right.button("Collect Latest Data From stocks"):
+        # raw_coins = call_coinmarketcap_api()
+        # coins = process_coinmarketcap_api(raw_coins=raw_coins)
+        # insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=coins)
+        st.success("Warning Not Implemented Yet")
 
-    for coin_name in df['coin_name'].unique():
-        st.title(f"{coin_name} Price")
-        coin_data = df[df['coin_name'] == coin_name]
-
-        # streamlit plot (inflexible)
-        # st.line_chart(data=coin_data, x='timestamp',y='price', use_container_width=True)
-
-        # plotly plot (more customisable)
-        fig = px.line(coin_data, x='timestamp', y='price', markers=True, line_shape='linear', title=f"{coin_name}")
-        st.plotly_chart(fig)
+    # Fetch & plot data from postgresql
+    df = fetch_coins_data_from_db(conn)
+    plot_coins(df)  # Plot coins in 2x2 grid
 
     print('debug')
 

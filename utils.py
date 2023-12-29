@@ -7,6 +7,8 @@ import streamlit as st
 from datetime import datetime
 import psycopg2
 import pandas as pd
+import plotly.subplots as sp
+import plotly.graph_objects as go
 
 
 def create_psql_connection():
@@ -88,7 +90,7 @@ def insert_psql_db_coinmarketcap(conn_cursor, data):
     return
 
 
-def fetch_data_from_db(conn):
+def fetch_coins_data_from_db(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM on_your_market_prices")
     data = cursor.fetchall()
@@ -97,3 +99,19 @@ def fetch_data_from_db(conn):
     df = pd.DataFrame(data, columns=['id', 'coin_name', 'price', 'timestamp'])
 
     return df
+
+
+def plot_coins(df):
+    # Plot coins in 2x2 grid
+    fig = sp.make_subplots(rows=2, cols=2, subplot_titles=df['coin_name'].unique())
+
+    # Iterate through each coin and add a line chart to the corresponding subplot
+    for i, coin_name in enumerate(df['coin_name'].unique()):
+        coin_data = df[df['coin_name'] == coin_name]
+
+        # Add a line chart to the subplot
+        fig.add_trace(go.Scatter(x=coin_data['timestamp'], y=coin_data['price'], mode='lines+markers', name=coin_name),
+                      row=(i // 2) + 1, col=(i % 2) + 1)
+
+    st.plotly_chart(fig)
+
