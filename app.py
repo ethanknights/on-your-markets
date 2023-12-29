@@ -16,6 +16,27 @@ load_dotenv(dotenv_path=dotenv_path)
 
 def main():
 
+    st.title('Market Prices')
+
+    conn = psycopg2.connect(
+        dbname="postgres",
+        user="postgres",
+        password="mysecretpassword",
+        host="localhost",
+        port="5432"
+    )
+    cursor = conn.cursor()
+
+    insert_query = """
+        INSERT INTO on_your_market_prices (coin_name, price, timestamp)
+        VALUES (%s, %s, %s);
+    """
+
+    # Example values
+    data_to_insert = ('Bitcoin', 50000, '2023-01-01 12:00:00')
+    cursor.execute(insert_query, data_to_insert)
+    conn.commit()
+
     # get data
     raw_coins = call_coinmarketcap_api()
 
