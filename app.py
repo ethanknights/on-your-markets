@@ -8,7 +8,10 @@ from utils import (
     process_coinmarketcap_api,
     insert_psql_db_coinmarketcap,
     fetch_coins_data_from_db,
-    plot_coins
+    plot_coins,
+    call_alphavantage_api,
+    ticker_search_alphavantage,
+    create_st_ticker_search_box,  # toy - not integrated.
 )
 
 env = 'dev'
@@ -30,17 +33,17 @@ def main():
         st.success("Data collection successful!")
 
     if button_col_right.button("Collect Latest Data From stocks"):
-        # raw_coins = call_coinmarketcap_api()
-        # coins = process_coinmarketcap_api(raw_coins=raw_coins)
-        # insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=coins)
+        raw_stocks = call_alphavantage_api('IBM')
+        # stocks = process_coinmarketcap_api(raw_coins=raw_stocks)
+        # insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=stocks)
         st.success("Warning Not Implemented Yet")
 
     # Fetch & plot data from postgresql
     df = fetch_coins_data_from_db(conn)
     plot_coins(df)  # Plot coins in 2x2 grid
 
+    create_st_ticker_search_box()
     print('debug')
-
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,5 @@
 # utils.py
-from requests import Request, Session
+from requests import Request, Session, get
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import os
@@ -115,3 +115,52 @@ def plot_coins(df):
 
     st.plotly_chart(fig)
 
+
+def call_alphavantage_api(symbol):
+    # symbol = 'IBM'
+
+    base_url = 'https://www.alphavantage.co'
+    endpoint = 'query'
+    function = 'TIME_SERIES_DAILY'
+    interval = '1d'
+    api_key = os.getenv('API-KEY-ALPHAVANTAGE')
+
+    url = f'{base_url}/{endpoint}?function={function}&symbol={symbol}&interval={interval}&apikey={api_key}'
+
+    headers = {
+        'Accepts': 'application/json',
+    }
+
+    session = Session()
+    session.headers.update(headers)
+
+    try:
+        response = session.get(url,)
+        json_data = response.json()
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        json_data = None
+        st.error(f"Error: {e}")
+
+    return json_data
+
+
+def create_st_ticker_search_box():
+
+    # Create a text input for the user to enter the ticker
+    ticker_input = st.text_input("Ticker Symbol Search:", "TESCO")
+
+    if st.button("Search"):
+        result = ticker_search_alphavantage(ticker_input)
+        st.json(result)  # Display the result in the Streamlit app
+
+    return
+
+
+def ticker_search_alphavantage(query_term):
+    api_key = os.getenv('API-KEY~ALPHAVANTAGE')
+
+    url = f'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={query_term}&apikey={api_key}'
+    r = get(url)
+    data = r.json()
+
+    return data
