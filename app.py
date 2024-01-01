@@ -20,8 +20,9 @@ def main():
 
     conn = create_psql_connection()
 
-    # Buttons to trigger data collection
+    # Define buttons to trigger data collection
     button_col_left, button_col_right = st.columns(2)
+
     if button_col_left.button("Collect Latest Data From CoinMarketCap"):
         raw_coins = call_coinmarketcap_api()
         coins = process_coinmarketcap_api(raw_coins=raw_coins)
