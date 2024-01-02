@@ -24,6 +24,7 @@ def main():
 
     conn = create_psql_connection()
 
+    st.title('Tracker - On Your Markets')
     # Define buttons to trigger data collection
     button_col_left, button_col_right = st.columns(2)
 
@@ -40,14 +41,17 @@ def main():
             st.success("Data collection successful!")
 
     # Fetch & plot data from postgresql
+    st.subheader('Digital Currency')
+    st.caption('Source: Coin Market Cap')
     df = fetch_coins_data_from_db(conn)
-    plot_coins(df)  # Plot coins in 2x2 grid
+    plot_coins(df)  # 2x2 grid
 
+    st.subheader('Stocks')
+    st.caption('Source: Polygon.io')
     df = fetch_stocks_data_from_db(conn)
-    plot_stocks(df)  # Plot coins in 1x2 grid
+    plot_stocks(df)  # 1x2 grid
 
     print('debug')
-
 
 if __name__ == '__main__':
     main()
