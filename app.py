@@ -9,9 +9,10 @@ from utils import (
     insert_psql_db_coinmarketcap,
     fetch_coins_data_from_db,
     plot_coins,
-    call_alphavantage_api,
-    ticker_search_alphavantage,
-    create_st_ticker_search_box,  # toy - not integrated.
+    call_polygon_api,
+    insert_psql_db_polygon,
+    fetch_stocks_data_from_db,
+    plot_stocks,
 )
 
 env = 'dev'
@@ -30,20 +31,23 @@ def main():
         raw_coins = call_coinmarketcap_api()
         coins = process_coinmarketcap_api(raw_coins=raw_coins)
         insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=coins)
-        st.success("Data collection successful!")
 
     if button_col_right.button("Collect Latest Data From stocks"):
-        raw_stocks = call_alphavantage_api('IBM')
-        # stocks = process_coinmarketcap_api(raw_coins=raw_stocks)
-        # insert_psql_db_coinmarketcap(conn_cursor=conn.cursor(), data=stocks)
-        st.success("Warning Not Implemented Yet")
+        symbol_names = ['IBM', 'VOO']
+        for symbol_name in symbol_names:
+            raw_stock = call_polygon_api(symbol_name)
+            insert_psql_db_polygon(conn_cursor=conn.cursor(), raw_stock=raw_stock)
+            st.success("Data collection successful!")
 
     # Fetch & plot data from postgresql
     df = fetch_coins_data_from_db(conn)
     plot_coins(df)  # Plot coins in 2x2 grid
 
-    create_st_ticker_search_box()
+    df = fetch_stocks_data_from_db(conn)
+    plot_stocks(df)  # Plot coins in 1x2 grid
+
     print('debug')
+
 
 if __name__ == '__main__':
     main()
