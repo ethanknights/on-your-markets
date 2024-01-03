@@ -1,19 +1,21 @@
-# appy.py
-#
+# app.py
+# Main code to run the application that requests & write financial asset data to the database connection (`conn`).
+# All historical data is re-consumed from our db-server using FastAPI endpoints, to create interactive visualisations.
 from dotenv import load_dotenv
+import requests
 import streamlit as st
-from utils import (
+import pandas as pd
+from src.common.utils import (
     create_psql_connection,
     call_coinmarketcap_api,
     process_coinmarketcap_api,
     insert_psql_db_coinmarketcap,
-    fetch_coins_data_from_db,
     plot_coins,
     call_polygon_api,
     insert_psql_db_polygon,
-    fetch_stocks_data_from_db,
     plot_stocks,
 )
+
 
 env = 'dev'
 dotenv_path = f'.env.{env}'
@@ -43,15 +45,18 @@ def main():
     # Fetch & plot data from postgresql
     st.subheader('Digital Currency')
     st.caption('Source: Coin Market Cap')
-    df = fetch_coins_data_from_db(conn)
-    plot_coins(df)  # 2x2 grid
+    coins_data_response = requests.get('http://127.0.0.1:8000/read_coins_data_from_psql_db')
+    df_coins = pd.DataFrame(coins_data_response.json())
+    plot_coins(df_coins)  # 2x2 grid
 
     st.subheader('Stocks')
     st.caption('Source: Polygon.io')
-    df = fetch_stocks_data_from_db(conn)
-    plot_stocks(df)  # 1x2 grid
+    stocks_data_response = requests.get('http://127.0.0.1:8000/read_stocks_data_from_psql_db')
+    df_stocks = pd.DataFrame(stocks_data_response.json())
+    plot_stocks(df_stocks)  # 1x2 grid
 
     print('debug')
+
 
 if __name__ == '__main__':
     main()

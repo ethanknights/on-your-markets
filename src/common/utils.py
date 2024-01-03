@@ -1,5 +1,5 @@
 # utils.py
-from requests import Request, Session, get
+from requests import Session, get
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import os
@@ -20,6 +20,7 @@ def create_psql_connection():
         host="localhost",
         port="5432"
     )
+
 
 def call_coinmarketcap_api():
     # base_url = 'https://sandbox-api.coinmarketcap.com'
