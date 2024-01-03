@@ -1,8 +1,8 @@
-# appy.py
+# app.py
 #
 from dotenv import load_dotenv
 import streamlit as st
-from utils import (
+from src.common.utils import (
     create_psql_connection,
     call_coinmarketcap_api,
     process_coinmarketcap_api,
