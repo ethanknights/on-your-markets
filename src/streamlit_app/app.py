@@ -1,6 +1,7 @@
 # app.py
 #
 from dotenv import load_dotenv
+import requests
 import streamlit as st
 from src.common.utils import (
     create_psql_connection,
@@ -14,6 +15,7 @@ from src.common.utils import (
     fetch_stocks_data_from_db,
     plot_stocks,
 )
+
 
 env = 'dev'
 dotenv_path = f'.env.{env}'
@@ -43,15 +45,17 @@ def main():
     # Fetch & plot data from postgresql
     st.subheader('Digital Currency')
     st.caption('Source: Coin Market Cap')
-    df = fetch_coins_data_from_db(conn)
-    plot_coins(df)  # 2x2 grid
+    coins_data_response = requests.get('http://127.0.0.1:8000/read_coins_data_from_psql_db')
+    df_coins = coins_data_response.json()
+    plot_coins(df_coins)  # 2x2 grid
 
     st.subheader('Stocks')
     st.caption('Source: Polygon.io')
-    df = fetch_stocks_data_from_db(conn)
-    plot_stocks(df)  # 1x2 grid
+    df_stocks = fetch_stocks_data_from_db(conn)
+    plot_stocks(df_stocks)  # 1x2 grid
 
     print('debug')
+
 
 if __name__ == '__main__':
     main()
