@@ -26,4 +26,3 @@ async def read_stocks_data_from_psql_db():
     conn = create_psql_connection()
     df = fetch_stocks_data_from_db(conn)
     return df.to_dict(orient='records')
-

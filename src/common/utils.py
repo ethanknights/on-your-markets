@@ -75,7 +75,9 @@ def insert_psql_db_coinmarketcap(conn_cursor, data):
         for asset in data:
             asset_name = asset['symbol']
             price = int(round(asset['quote']['GBP']['price']))
-            timestamp = datetime.strptime(asset['quote']['GBP']['last_updated'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            timestamp = datetime.strptime(asset
+                                          ['quote']['GBP']['last_updated'],
+                                          "%Y-%m-%dT%H:%M:%S.%fZ")
 
             print(f'Ready for psql write: {price} {timestamp}')
             data_to_insert = (asset_name, price, timestamp)
@@ -114,7 +116,10 @@ def plot_coins(df):
         coin_data = df[df['coin_name'] == coin_name]
 
         # Add a line chart to the subplot
-        fig.add_trace(go.Scatter(x=coin_data['timestamp'], y=coin_data['price'], mode='lines+markers', name=coin_name),
+        fig.add_trace(go.Scatter(x=coin_data['timestamp'],
+                                 y=coin_data['price'],
+                                 mode='lines+markers',
+                                 name=coin_name),
                       row=(i // 2) + 1, col=(i % 2) + 1)
 
     st.plotly_chart(fig)
@@ -131,7 +136,8 @@ def call_alphavantage_api(symbol):
     interval = '1d'
     api_key = os.getenv('API-KEY-ALPHAVANTAGE')
 
-    url = f'{base_url}/{endpoint}?function={function}&symbol={symbol}&interval={interval}&apikey={api_key}'
+    url = f'{base_url}/{endpoint}' \
+          f'?function={function}&symbol={symbol}&interval={interval}&apikey={api_key}'
 
     headers = {
         'Accepts': 'application/json',
@@ -165,7 +171,8 @@ def create_st_ticker_search_box():
 def ticker_search_alphavantage(query_term):
     api_key = os.getenv('API-KEY~ALPHAVANTAGE')
 
-    url = f'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={query_term}&apikey={api_key}'
+    url = f'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=' \
+          f'{query_term}&apikey={api_key}'
     r = get(url)
     data = r.json()
 
@@ -184,7 +191,9 @@ def call_polygon_api(symbol):
 
     api_key = os.getenv('API-KEY-POLYGON')
 
-    url = f'{base_url}/{endpoint}/ticker/{symbol}/range/1/day/{date_start}/{date_end}?adjusted=true&sort=asc&limit=3&apiKey={api_key}'
+    url = f'{base_url}/{endpoint}' \
+          f'/ticker/{symbol}/range/1/day/{date_start}/{date_end}' \
+          f'?adjusted=true&sort=asc&limit=3&apiKey={api_key}'
 
     headers = {
         'Accepts': 'application/json',
@@ -254,7 +263,10 @@ def plot_stocks(df):
         data = df[df['coin_name'] == asset_name]
 
         # Add a line chart to the subplot
-        fig.add_trace(go.Scatter(x=data['timestamp'], y=data['price'], mode='lines+markers', name=asset_name),
+        fig.add_trace(go.Scatter(x=data['timestamp'],
+                                 y=data['price'],
+                                 mode='lines+markers',
+                                 name=asset_name),
                       row=(i // 2) + 1, col=(i % 2) + 1)
 
     st.plotly_chart(fig)
