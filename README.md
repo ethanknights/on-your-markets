@@ -9,12 +9,13 @@ This application demonstrates how to use Streamlit with a FastAPI framework to:
 
 # Local Quickstart
 1. Start API server from root: `uvicorn src.fastAPI_app.app:app --reload`
-2. Run application, ensuring the root directory is on path: `run.sh` `# export PYTHONPATH=$PYTHONPATH:$(pwd) && venv/bin/streamlit run src/streamlit_app/app.py`
-3. Use application: http://localhost:8501
+2. Start a local postgreSQL container: `docker compose up -d`
+3. Run application, ensuring the root directory is on path: `run.sh` `# export PYTHONPATH=$PYTHONPATH:$(pwd) && venv/bin/streamlit run src/streamlit_app/app.py`
+4. Use application: http://localhost:8501
  
 <b>Prerequisites</b>
 - Install python packages in a virtual environment: `pip install -r requirements.txt`
-- Install docker (`brew docker`) and start a local postgreSQL container: `docker compose up -d`
+- Install docker: `brew docker`
 - Create the `psql` data table (refer to the `SQL` snippet in the section: [Database](#Database)).
 - Add your API-Keys for each external service in `sample.env.dev` & rename this file to `.env.dev`.
 
