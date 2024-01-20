@@ -10,7 +10,7 @@ This application demonstrates how to use Streamlit with a FastAPI framework to:
 # Local Quickstart
 1. Start API server from root: `uvicorn src.fastAPI_app.app:app --reload`
 2. Start a local postgreSQL container: `docker compose up -d`
-3. Run application, ensuring the root directory is on path: `run.sh` `# export PYTHONPATH=$PYTHONPATH:$(pwd) && venv/bin/streamlit run src/streamlit_app/app.py`
+3. Run application, ensuring the root directory is on path: `./run.sh` `# export PYTHONPATH=$PYTHONPATH:$(pwd) && venv/bin/streamlit run src/streamlit_app/app.py`
 4. Use application: http://localhost:8501
  
 <b>Prerequisites</b>
