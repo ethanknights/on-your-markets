@@ -42,7 +42,7 @@ Generally the flow involves:
 ### First-time-setup
  Connect to your PostgreSQL contained server in bash:
 ```shell
-docker exec -it postgres-on-your-markets psql -U postgres -d postgres
+docker exec -it postgres-on_your_markets psql -U postgres -d postgres
 ```
 
 Create the core table within the psql terminal:

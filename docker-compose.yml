@@ -3,7 +3,7 @@ version: '3.8'
 services:
   my-postgres:
     image: postgres:latest
-    container_name: postgres-on-your-markets
+    container_name: postgres-on_your_markets
     environment:
       POSTGRES_PASSWORD: mysecretpassword
     ports:
