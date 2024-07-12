@@ -55,7 +55,7 @@ CREATE TABLE on_your_market_prices (
 );
 ```
 
-## Outward API
+## API
 The FastAPI framework is used to setup endpoints (see `src/fastAPI_app/app.py`) for consuming historical asset value's from the database:
 `requests.get('http://127.0.0.1:8000/get_stocks_data')`
 
